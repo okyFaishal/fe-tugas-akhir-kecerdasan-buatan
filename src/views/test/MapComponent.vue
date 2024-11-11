@@ -21,10 +21,6 @@
           <label for="level_area_banjir" class="font-bold block mb-2"> Level area banjir </label>
           <SelectButton id="level_area_banjir" v-model="dataForm.level_area_banjir" :options="[{label: 'Tinggi', value: 1}, {label: 'Sedang', value: 2}, {label: 'Rendah', value: 3}, ]" optionLabel="label" optionValue="value" />
         </div>
-        <!-- <FloatLabel variant="on">
-          <InputText id="level_area_banjir" type="number" v-model="dataForm.level_area_banjir" class="w-full" autocomplete="off" />
-          <label for="level_area_banjir">Level area banjir</label>
-        </FloatLabel> -->
       </div>
     </div>
     <div class="flex gap-3">
