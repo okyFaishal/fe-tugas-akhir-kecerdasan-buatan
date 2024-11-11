@@ -33,6 +33,16 @@ const router = createRouter({
                     name: 'test',
                     component: () => import('@/views/test/test.vue')
                 },
+                {
+                    path: '/area-banjir',
+                    name: 'area banjir',
+                    component: () => import('@/views/area-banjir/area-banjir.vue')
+                },
+                {
+                    path: '/rute-perjalanan',
+                    name: 'rute perjalanan',
+                    component: () => import('@/views/rute-perjalanan/rute-perjalanan.vue')
+                },
             ]
         },
         {

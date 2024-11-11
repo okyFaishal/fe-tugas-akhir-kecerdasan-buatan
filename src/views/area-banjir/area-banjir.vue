@@ -1,9 +1,4 @@
 <template>
-  <div class="card">
-    <div class="flex justify-content-end">
-      <SelectButton v-model="mode" :options="['add', 'route']" />
-    </div>
-  </div>
   <div class="card" style="border-radius: 20px; padding: 10px;">
     <div id="map" style="height: 500px; border-radius: 10px;"></div>
   </div>
@@ -21,10 +16,6 @@
           <label for="level_area_banjir" class="font-bold block mb-2"> Level area banjir </label>
           <SelectButton id="level_area_banjir" v-model="dataForm.level_area_banjir" :options="[{label: 'Tinggi', value: 1}, {label: 'Sedang', value: 2}, {label: 'Rendah', value: 3}, ]" optionLabel="label" optionValue="value" />
         </div>
-        <!-- <FloatLabel variant="on">
-          <InputText id="level_area_banjir" type="number" v-model="dataForm.level_area_banjir" class="w-full" autocomplete="off" />
-          <label for="level_area_banjir">Level area banjir</label>
-        </FloatLabel> -->
       </div>
     </div>
     <div class="flex gap-3">
@@ -46,7 +37,6 @@ export default {
   data() {
     return {
       map: null,
-      mode: 'add',
       areaPoints: [], // Menyimpan titik-titik yang dipilih
       polygon: null,   // Menyimpan polygon area yang dipilih
       listPolygon: [],
@@ -101,103 +91,21 @@ export default {
         const { lat, lng } = e.latlng;
         vm.addPoint(lat, lng);
       });
-
-      // Menambahkan kontrol rute
-      const routeControl = L.Routing.control({
-        waypoints: [
-          L.latLng('-6.995186997945882', '110.4341737838987'),
-          L.latLng('-6.995879180790946', '110.40988362043508'),
-        ],
-        // routeWhileDragging: true,
-        // // createMarker: () => null, // Tidak menampilkan marker
-        // show: false, // Tidak menampilkan panel
-        // // addWaypoints: false, // Mencegah penambahan titik waypoint oleh pengguna
-        // altLineOptions: {
-        //   // Menambahkan garis alternatif jika diperlukan, atau bisa dihilangkan
-        // },
-        // lineOptions: {
-        //   styles: [{ color: "blue", weight: 4, opacity: 0.7 }]
-        // },
-      }).addTo(this.map);
-
-      // Menonaktifkan instruksi yang muncul
-      // routeControl.getPlan().on("routefound", function(e) {
-      //   e.route.instructions.forEach(instruction => {
-      //     instruction._text = "";  // Menghapus teks instruksi
-      //   });
-      // });
-
-      routeControl.on('routesfound', this.handleRouteFound);
-    },
-    // Fungsi untuk menangani event 'routesfound' dan mendapatkan koordinat setiap 1 meter
-    handleRouteFound(event) {
-      console.log('jalan', event.routes)
-      // event.routes[1] = undefined
-      const route = event.routes[0]; // Ambil rute pertama dari array routes
-      const latlngs = route.instructions.map(instruction => instruction.location); // Ambil lokasi dari instruksi rute
-      // event.routes[0].instructions = []
-      console.log("event.routes", event.routes)
-      // event.routes = [event.routes[0]]
-      console.log("event.routes", event.routes)
-      for (let i = 0; i < event.routes.length; i++) {
-        const route = event.routes[i];
-        console.log('route', route)
-        route.instructions = []
-        // route.name = ''
-        // route.summary = {totalDistance: 0, totalTime: 0}
-      }
-
-      // Fungsi untuk mendapatkan koordinat setiap 1 meter
-      const coordinates = this.getCoordinatesAtInterval(latlngs, 1); // 1 meter interval
-      console.log(coordinates); // Menampilkan koordinat setiap 1 meter
-    },
-    // Fungsi untuk interpolasi koordinat setiap interval meter
-    // Fungsi untuk interpolasi koordinat setiap interval meter
-    getCoordinatesAtInterval(latlngs, interval) {
-      const coordinates = [];
-      let totalDistance = 0;
-
-      // Loop untuk mendapatkan titik setiap interval
-      for (let i = 0; i < latlngs.length - 1; i++) {
-        const start = latlngs[i];
-        const end = latlngs[i + 1];
-        // console.log(latlngs, ' , ', start, ' - ', end)
-        // Pastikan koordinat start dan end valid sebelum menggunakan distanceTo
-        if (start && end) {
-          const segmentDistance = start.distanceTo(end); // Hitung jarak antar dua titik
-
-          // Hitung berapa banyak titik yang diperlukan untuk mencapai interval meter
-          const pointsNeeded = Math.floor(segmentDistance / interval);
-          for (let j = 0; j <= pointsNeeded; j++) {
-            const fraction = j / pointsNeeded;
-            const point = L.latLng(
-              start.lat + fraction * (end.lat - start.lat),
-              start.lng + fraction * (end.lng - start.lng)
-            );
-            coordinates.push(point); // Simpan titik koordinat
-          }
-        } else {
-          console.error("Koordinat tidak valid pada indeks: ", i);
-        }
-      }
-      console.log("coordinates 1", coordinates);
     },
     addPoint(lat, lng) {
       const vm = this
-      if(vm.mode === 'add'){
-        console.log('lat, lng', lat, lng)
-        // Tambahkan titik ke array areaPoints
-        vm.areaPoints.push([lat, lng]);
-  
-        // Perbarui tampilan polygon di peta
-        if (this.polygon) {
-          this.map.removeLayer(this.polygon);
-        }
-        this.polygon = L.polygon(this.areaPoints, { color: 'blue' }).addTo(this.map);
-        if(vm.dataForm.id_area_banjir) vm.dataForm = {
-          nama_area_banjir: null,
-          level_area_banjir: null,
-        }
+      // console.log('lat, lng', lat, lng)
+      // Tambahkan titik ke array areaPoints
+      vm.areaPoints.push([lat, lng]);
+
+      // Perbarui tampilan polygon di peta
+      if (this.polygon) {
+        this.map.removeLayer(this.polygon);
+      }
+      this.polygon = L.polygon(this.areaPoints, { color: 'blue' }).addTo(this.map);
+      if(vm.dataForm.id_area_banjir) vm.dataForm = {
+        nama_area_banjir: null,
+        level_area_banjir: null,
       }
     },
     async getData(){
@@ -350,23 +258,8 @@ export default {
 </script>
 
 <style scoped>
-
 #map {
   width: 100%;
   height: 500px;
 }
-/* button {
-  margin-top: 10px;
-  padding: 10px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button:disabled {
-  background-color: #aaa;
-  cursor: not-allowed;
-} */
 </style>

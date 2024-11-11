@@ -10,7 +10,23 @@ const model = ref([
     },
     {
         label: 'Test',
-        items: [{ label: 'Test', icon: 'pi pi-fw pi-circle-off', to: '/test' }]
+        items: [
+            {
+                label: 'Test',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/test'
+            },
+            {
+                label: 'Area Banjir',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/area-banjir'
+            },
+            {
+                label: 'Rute Perjalanan',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/rute-perjalanan'
+            },
+        ]
     },
     {
         label: 'Pages',
