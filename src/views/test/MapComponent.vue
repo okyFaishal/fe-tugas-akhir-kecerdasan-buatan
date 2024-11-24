@@ -110,7 +110,9 @@ export default {
         if(wayTujuan.tags.oneway == 'no') waysTo.push({...wayTujuan, nodeWaySearch: wayTujuan.nodeStart})
 
         // get rute
-        this.getRute(waysFrom, waysTo, [], [])
+        // this.getRute(waysFrom, waysTo, [], [])
+        let hasil = this.getRute(waysFrom, waysTo, [], [])
+        console.log("hasil", hasil)
 
         // Tampilkan rute setelah kedua titik dipilih
         // this.fetchRoute();
@@ -149,7 +151,7 @@ export default {
     },
 
     getWayRute(search){
-      const waysFrom = []
+      // const waysFrom = []
       for (const key in this.ways) { //perulangan way
         if (Object.prototype.hasOwnProperty.call(this.ways, key)) {
           const way = this.ways[key];
@@ -162,8 +164,6 @@ export default {
           }
         }
       }
-      let hasil = this.getRute(waysFrom, wayTo, listWay, nodeVisited)
-      console.log("hasil", hasil)
     },
 
     getWay(wayFrom){
