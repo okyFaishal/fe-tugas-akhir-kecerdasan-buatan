@@ -1,9 +1,9 @@
 <template>
-  <div class="card">
+  <!-- <div class="card">
     <input v-model="origin" placeholder="Masukkan alamat asal" />
     <input v-model="destination" placeholder="Masukkan alamat tujuan" />
     <Button @click="generateRoute">Cari Rute</Button>
-  </div>
+  </div> -->
   <div class="card" style="border-radius: 20px; padding: 10px;">
     <div id="map" style="height: 500px; border-radius: 10px;"></div>
   </div>
@@ -27,29 +27,19 @@ export default {
       routingControl: null,
       origin: '',
       destination: '',
+      koordinat: {
+        tujuan: {lat: 0, lng: 0},
+        asal: {lat: 0, lng: 0},
+      },
       apiKey: '9c2dc2a6e60e44e5be39883924de55d9', // Ganti dengan API key dari OpenCage
     };
   },
   async mounted() {
     const vm = this
     await vm.setMap()
-    await vm.getData()
-    await vm.setStatusBanjir()
-    let openMeteo = await Axios.get('https://api.open-meteo.com/v1/forecast', {
-      params: {
-        latitude: -6.987599541823833,
-        longitude: 110.41071318060438,
-        current: 'rain',
-        hourly: 'rain'
-      },
-    }); 
-    let openweathermap = await Axios.get('https://api.openweathermap.org/data/2.5/weather', {
-      params: {
-        lat: -6.987599541823833,
-        lon: 110.41071318060438,
-        appid: '1f4fdff7329bd98f31a366f69925c59b',
-      },
-    });
+    this.drawFloodAreas();
+    // await vm.getData()
+    // await vm.setStatusBanjir()
     
     let lat = -6.987599541823833 // vertikal
     let lng = 110.41071318060438 // horizontal
@@ -67,12 +57,30 @@ export default {
       }).addTo(vm.map);
       [lat, lng] = [lat + (radius * 2), 110.41071318060438]
     }
+
+    // add event clisk map
+    vm.map.on('click', async (e) => {
+      const { lat, lng } = e.latlng;
+      if(vm.koordinat.asal.lat && vm.koordinat.tujuan.lat){
+        vm.koordinat = {
+          tujuan: {lat: 0, lng: 0},
+          asal: {lat: 0, lng: 0},
+        }
+      }
+      if(!vm.koordinat.asal.lat){
+        vm.koordinat.asal.lat = lat
+        vm.koordinat.asal.lng = lng
+      }else{
+        vm.koordinat.tujuan.lat = lat
+        vm.koordinat.tujuan.lng = lng
+        vm.generateRoute()
+      }
+    });
   },
   methods: {
     async setMap() {
       const vm = this
-      // let center = [-6.987599541823833, 110.41071318060438] // titik koordinat untuk default tengah map
-      let center = [51.505, -0.09] // titik koordinat untuk default tengah map
+      let center = [-6.987599541823833, 110.41071318060438] // titik koordinat untuk default tengah map
       var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap',
@@ -82,14 +90,6 @@ export default {
         zoom: 14,
         layers: [osm]
       });
-      // Menambahkan kontrol rute
-      // const routeControl = L.Routing.control({
-      //   waypoints: [
-      //     L.latLng('-6.995186997945882', '110.4341737838987'),
-      //     L.latLng('-6.995879180790946', '110.40988362043508'),
-      //   ],
-      // }).addTo(this.map);
-      // routeControl.on('routesfound', await this.handleRouteFound);
     },
     async setStatusBanjir(){
       const vm = this
@@ -122,57 +122,81 @@ export default {
         vm.$toast.add({ severity: 'error', summary: 'Error', detail: 'Terjadi kesalahan sistem', life: 3000 });
       }
     },
-    // Fungsi untuk menangani event 'routesfound' dan mendapatkan koordinat setiap 1 meter
-    async handleRouteFound(event) {
-      console.log('jalan', event.routes)
-      // event.routes[1] = undefined
-      const route = event.routes[0]; // Ambil rute pertama dari array routes
-      const latlngs = route.instructions.map(instruction => instruction.location); // Ambil lokasi dari instruksi rute
-      // event.routes[0].instructions = []
-      // console.log("event.routes", event.routes)
-      // event.routes = [event.routes[0]]
-      // console.log("event.routes", event.routes)
-      for (let i = 0; i < event.routes.length; i++) {
-        const route = event.routes[i];
-        // console.log('route', i, route)
-        route.instructions = []
-        // route.name = ''
-        // route.summary = {totalDistance: 0, totalTime: 0}
-      }
-
-      // Fungsi untuk mendapatkan koordinat setiap 1 meter
-      // const coordinates = this.getCoordinatesAtInterval(latlngs, 1); // 1 meter interval
-      // console.log(coordinates); // Menampilkan koordinat setiap 1 meter
-    },
     async generateRoute() {
-      // Mengonversi alamat asal dan tujuan ke koordinat
       try {
-        const originCoords = await this.geocodeAddress(this.origin);
-        const destinationCoords = await this.geocodeAddress(this.destination);
+        const originCoords = this.koordinat.asal;
+        const destinationCoords = this.koordinat.tujuan;
 
-        // Jika routingControl sudah ada, hapus dulu dari peta
         if (this.routingControl) {
           this.map.removeControl(this.routingControl);
         }
 
-        // Menambahkan routing control dengan titik asal dan tujuan
         this.routingControl = L.Routing.control({
           waypoints: [
             L.latLng(originCoords.lat, originCoords.lng),
-            L.latLng(destinationCoords.lat, destinationCoords.lng),
+            L.latLng(destinationCoords.lat, destinationCoords.lng)
           ],
-          routeWhileDragging: true,
+          routeWhileDragging: true
         }).addTo(this.map);
 
-        // Pindahkan tampilan peta agar fokus ke rute
-        this.map.fitBounds([
-          [originCoords.lat, originCoords.lng],
-          [destinationCoords.lat, destinationCoords.lng],
-        ]);
+        this.routingControl.on('routesfound', (e) => {
+          const route = e.routes[0];
+          const coordinates = route.coordinates;
+
+          if (this.checkFloodAreaIntersection(coordinates)) {
+            alert("Rute melewati area banjir! Silakan pilih rute lain.");
+          }
+        });
+
       } catch (error) {
         console.error("Error menemukan koordinat: ", error);
       }
     },
+    checkFloodAreaIntersection(routeCoordinates) {
+      const floodAreas = [
+        [
+          [-6.989644173706021, 110.43440637111286],
+          [-6.988451472861695, 110.42745311132884],
+          [-6.9982485681456925, 110.4237618746534],
+          [-6.9995264349850554, 110.43097266257753]
+        ]
+      ];
+
+      for (const area of floodAreas) {
+        const polygon = L.polygon(area);
+        for (const coord of routeCoordinates) {
+          if (polygon.getBounds().contains(L.latLng(coord.lat, coord.lng))) {
+            return true; // Rute melewati area banjir
+          }
+        }
+      }
+      return false;
+    },
+    drawFloodAreas() {
+      const floodAreas = [
+        {
+          id_area_banjir: "43e5baa1-d6cc-466d-ac3a-062fdbb07a86",
+          nama_area_banjir: "4",
+          list_titik_area_banjir: [
+            { lat_titik_area_banjir: "-6.989644173706021", lng_titik_area_banjir: "110.43440637111286" },
+            { lat_titik_area_banjir: "-6.988451472861695", lng_titik_area_banjir: "110.42745311132884" },
+            { lat_titik_area_banjir: "-6.9982485681456925", lng_titik_area_banjir: "110.4237618746534" },
+            { lat_titik_area_banjir: "-6.9995264349850554", lng_titik_area_banjir: "110.43097266257753" }
+          ]
+        }
+      ];
+
+      floodAreas.forEach(area => {
+        const polygonPoints = area.list_titik_area_banjir.map(point => [
+          parseFloat(point.lat_titik_area_banjir),
+          parseFloat(point.lng_titik_area_banjir)
+        ]);
+
+        const polygon = L.polygon(polygonPoints, { color: 'red', fillOpacity: 0.5 });
+        polygon.addTo(this.map);
+      });
+    },
+
     async geocodeAddress(address) {
       // Meminta geocoding API untuk mendapatkan koordinat dari alamat
       const response = await Axios.get(

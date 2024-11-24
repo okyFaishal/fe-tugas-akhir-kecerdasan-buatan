@@ -20,6 +20,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
+            // 'fast-deep-equal': 'fast-deep-equal/index.js',
         }
     }
 });

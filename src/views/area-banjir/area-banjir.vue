@@ -49,8 +49,8 @@ export default {
   },
   async mounted() {
     const vm = this
-    vm.setMap()
-    vm.getData()
+    await vm.setMap()
+    await vm.getData()
     let openMeteo = await Axios.get('https://api.open-meteo.com/v1/forecast', {
       params: {
         latitude: -6.987599541823833,
@@ -94,7 +94,8 @@ export default {
     },
     addPoint(lat, lng) {
       const vm = this
-      // console.log('lat, lng', lat, lng)
+      console.log('lat', lat)
+      console.log('lng', lng)
       // Tambahkan titik ke array areaPoints
       vm.areaPoints.push([lat, lng]);
 
@@ -106,6 +107,14 @@ export default {
       if(vm.dataForm.id_area_banjir) vm.dataForm = {
         nama_area_banjir: null,
         level_area_banjir: null,
+      }
+    },
+    clickArea(data) {
+      const vm = this
+      vm.dataForm = data
+      if(vm.polygon){
+        vm.map.removeLayer(vm.polygon);
+        vm.areaPoints = []
       }
     },
     async getData(){
@@ -157,14 +166,6 @@ export default {
         vm.$toast.add({ severity: 'error', summary: 'Error', detail: 'Terjadi kesalahan sistem', life: 3000 });
       } finally {
         vm.loading = false
-      }
-    },
-    clickArea(data) {
-      const vm = this
-      vm.dataForm = data
-      if(vm.polygon){
-        vm.map.removeLayer(vm.polygon);
-        vm.areaPoints = []
       }
     },
     async submit(){
