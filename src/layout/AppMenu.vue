@@ -26,6 +26,11 @@ const model = ref([
                 icon: 'pi pi-fw pi-circle-off',
                 to: '/rute-perjalanan'
             },
+            {
+                label: 'Rute By Node',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/rute-by-node'
+            },
         ]
     },
     {

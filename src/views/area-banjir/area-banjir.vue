@@ -73,7 +73,8 @@ export default {
     async setMap() {
       const vm = this
       // await new Promise(resolve => setTimeout(resolve, 1000));
-      let center = [-6.987599541823833, 110.41071318060438]
+      // let center = [-6.987599541823833, 110.41071318060438]
+      let center = [-6.947599541823833, 110.41071318060438]
 
       var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -81,10 +82,19 @@ export default {
       });
       
       vm.map = L.map('map', {
-        center,
+        center, 
         zoom: 14,
         layers: [osm]
       });
+
+      // const imageBounds = [
+      //   [-6.9095, 110.270], // Southwest corner
+      //   [-7.140, 110.507], // Northeast corner
+      // ];
+      // const overlay = L.imageOverlay("image/peta-area-rawan-banjir-kota-semarang.jpg", imageBounds, {
+      //   opacity: 0.5, // Set opacity to 50%
+      // });
+      // overlay.addTo(this.map);
       
       //event click map untuk membuat pin
       vm.map.on('click', async (e) => {

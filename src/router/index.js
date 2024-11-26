@@ -43,6 +43,11 @@ const router = createRouter({
                     name: 'rute perjalanan',
                     component: () => import('@/views/rute-perjalanan/rute-perjalanan.vue')
                 },
+                {
+                    path: '/rute-by-node',
+                    name: 'rute by node',
+                    component: () => import('@/views/rute-by-node/rute-by-node.vue')
+                },
             ]
         },
         {
