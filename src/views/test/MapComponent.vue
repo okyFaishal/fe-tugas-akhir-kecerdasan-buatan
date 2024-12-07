@@ -114,6 +114,7 @@ export default {
     // Event klik di peta
     async onMapClick(e) {
       const { lat, lng } = e.latlng;
+      console.log("lat, lng", lat, lng)
 
       if (!this.rute.asal) {
         // Tetapkan koordinat awal

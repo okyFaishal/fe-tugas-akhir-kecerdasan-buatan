@@ -2,9 +2,10 @@
 import axios from "axios";
 
 // import ip from '/ipBackend.js';
-// const ip = process.env.VUE_APP_IP_BACKEND;
+const url = import.meta.env.VITE_APP_IP_BACKEND;
 const instance = axios.create({
-  baseURL: 'http://localhost:8004/',
+  baseURL: url,
+  // baseURL: 'http://localhost:8004/',
 });
 // reques axios / sebelum kirim
 instance.interceptors.request.use(async (req) => { 

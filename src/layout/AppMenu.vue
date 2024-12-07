@@ -34,6 +34,45 @@ const model = ref([
         ]
     },
     {
+        label: 'Rute',
+        icon: 'pi pi-fw pi-briefcase',
+        to: '/rute',
+        items: [
+            {
+                label: 'Rute 1',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/rute/rute-1'
+            },
+            {
+                label: 'Rute 2',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/rute/rute-2'
+            },
+        ]
+    },
+    {
+        label: 'Set Data',
+        icon: 'pi pi-fw pi-briefcase',
+        to: '/set-data',
+        items: [
+            {
+                label: 'Cuaca - Banjir',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/set-data/cuaca'
+            },
+            {
+                label: 'Rute',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/set-data/rute'
+            },
+            {
+                label: 'Wilayah',
+                icon: 'pi pi-fw pi-circle-off',
+                to: '/set-data/wilayah'
+            },
+        ]
+    },
+    {
         label: 'Pages',
         icon: 'pi pi-fw pi-briefcase',
         to: '/pages',

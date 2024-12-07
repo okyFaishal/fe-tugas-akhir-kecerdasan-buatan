@@ -16,19 +16,24 @@ import '@/assets/styles.scss';
 import '@/assets/tailwind.css';
 
 import axios from "@/axios/index.js";
+import moment from 'moment';
+import 'moment/locale/id';
+moment.locale('id');
+console.log('moment', moment().format('LLLL'))
 
 const app = createApp(App);
 
 app.config.globalProperties.$axios = axios;
+app.config.globalProperties.$moment = moment;
 
 app.use(router);
 app.use(PrimeVue, {
-    theme: {
-        preset: Aura,
-        options: {
-            darkModeSelector: '.app-dark'
-        }
+  theme: {
+    preset: Aura,
+    options: {
+      darkModeSelector: '.app-dark'
     }
+  }
 });
 app.use(ToastService);
 app.use(ConfirmationService);
