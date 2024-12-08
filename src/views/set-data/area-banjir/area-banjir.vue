@@ -1,6 +1,6 @@
 <template>
   <div class="card" style="border-radius: 20px; padding: 10px;">
-    <div id="map" style="height: 500px; border-radius: 10px;"></div>
+    <div ref="map" style="height: 500px; border-radius: 10px;"></div>
   </div>
   <div class="mt-8 card">
     <h3 class="text-xl font-bold">Masukkan data koordinat</h3>
@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import Axios from 'axios';
 import L from "leaflet";
 import "leaflet-routing-machine";
 import "leaflet/dist/leaflet.css";
@@ -51,50 +50,21 @@ export default {
     const vm = this
     await vm.setMap()
     await vm.getData()
-    let openMeteo = await Axios.get('https://api.open-meteo.com/v1/forecast', {
-      params: {
-        latitude: -6.987599541823833,
-        longitude: 110.41071318060438,
-        current: 'rain',
-        hourly: 'rain'
-      },
-    }); 
-    let openweathermap = await Axios.get('https://api.openweathermap.org/data/2.5/weather', {
-      params: {
-        lat: -6.987599541823833,
-        lon: 110.41071318060438,
-        appid: '1f4fdff7329bd98f31a366f69925c59b',
-      },
-    }); 
-    // console.log('openMeteo',  openMeteo)
-    // console.log('openweathermap',  openweathermap)
   },
   methods: {
     async setMap() {
-      const vm = this
-      // await new Promise(resolve => setTimeout(resolve, 1000));
-      // let center = [-6.987599541823833, 110.41071318060438]
-      let center = [-6.947599541823833, 110.41071318060438]
+      const vm = this      
+      // membuat peta dengan pusat di koordinat Semarang
+      const latitude = -6.987599541823833
+      const longitude = 110.41071318060438
+      vm.map = L.map(vm.$refs.map).setView([latitude, longitude], 12);
 
-      var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap',
-      });
-      
-      vm.map = L.map('map', {
-        center, 
+      // menambahkan tile layer dari OpenStreetMap
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 20, // maksimal zoom
         zoom: 14,
-        layers: [osm]
-      });
-
-      // const imageBounds = [
-      //   [-6.9095, 110.270], // Southwest corner
-      //   [-7.140, 110.507], // Northeast corner
-      // ];
-      // const overlay = L.imageOverlay("image/peta-area-rawan-banjir-kota-semarang.jpg", imageBounds, {
-      //   opacity: 0.5, // Set opacity to 50%
-      // });
-      // overlay.addTo(this.map);
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(vm.map);
       
       //event click map untuk membuat pin
       vm.map.on('click', async (e) => {

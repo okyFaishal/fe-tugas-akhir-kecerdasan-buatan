@@ -12,7 +12,7 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
                 <i class="pi pi-bars"></i>
             </button>
             <router-link to="/" class="layout-topbar-logo">
-                <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         fill-rule="evenodd"
                         clip-rule="evenodd"
@@ -28,9 +28,9 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
                             fill="var(--primary-color)"
                         />
                     </g>
-                </svg>
+                </svg> -->
 
-                <span>SAKAI</span>
+                <span>Rute anti banjir</span>
             </router-link>
         </div>
 
@@ -58,7 +58,7 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
                 <i class="pi pi-ellipsis-v"></i>
             </button>
 
-            <div class="layout-topbar-menu hidden lg:block">
+            <!-- <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
                     <button type="button" class="layout-topbar-action">
                         <i class="pi pi-calendar"></i>
@@ -73,7 +73,7 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
                         <span>Profile</span>
                     </button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

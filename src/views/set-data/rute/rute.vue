@@ -27,7 +27,7 @@
     </div>
     <div id="app" v-show="!loading">
       <Button class="mb-3 w-full" severity="primary" @click="getRute()">refresh</Button>
-      <div id="map" ref="mapContainer"></div>
+      <div id="map" ref="mapContainer" style="border-radius: 10px;"></div>
     </div>
   </div>
 </template>

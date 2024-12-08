@@ -34,11 +34,6 @@ const router = createRouter({
           component: () => import('@/views/test/test.vue')
         },
         {
-          path: '/area-banjir',
-          name: 'area banjir',
-          component: () => import('@/views/area-banjir/area-banjir.vue')
-        },
-        {
           path: '/rute-perjalanan',
           name: 'rute perjalanan',
           component: () => import('@/views/rute-perjalanan/rute-perjalanan.vue')
@@ -70,6 +65,11 @@ const router = createRouter({
       path: '/set-data',
       component: AppLayout,
       children: [
+        {
+          path: '/set-data/area-banjir',
+          name: 'area banjir',
+          component: () => import('@/views/set-data/area-banjir/area-banjir.vue')
+        },
         {
           path: '/set-data/cuaca',
           name: 'cuaca',
