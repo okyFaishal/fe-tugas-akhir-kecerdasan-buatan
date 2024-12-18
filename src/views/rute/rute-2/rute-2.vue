@@ -89,7 +89,7 @@ export default {
           }else{
             const data = JSON.parse(res.data.data.replace(/'/g, '"').replace(/False/g, 'false').replace(/True/g, 'true')) // format data respon
             vm.kesimpulan = vm.calculateDistanceAndTime(data) // set jarak dan perkiraan waktu
-            console.log("res.data.data", data)
+            console.log("res.data.data", data.map(x => x.id_rute_jalur))
             vm.dataForm.listRute.push(L.polyline(data.map(x => [x.lat_rute_koordinat, x.lng_rute_koordinat]), { color: "blue" }).addTo(vm.map)); // rute garis
           }
         }
